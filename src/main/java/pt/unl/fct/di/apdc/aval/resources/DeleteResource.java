@@ -38,40 +38,27 @@ public class DeleteResource {
             if(!confirmation.equals(DigestUtils.sha512Hex(user.password)))
                 return Response.status(Status.NOT_ACCEPTABLE).entity("Error: Wrong password").build();
 
+            String delRole = del.getString("role");
             switch (user2.getString("role")){
                 case "User":
                     if(!user.username.equals(username))
                         return Response.status(Status.BAD_REQUEST).entity("Error: Don't have permissions").build();
-                    txn.delete(delKey);
-                    txn.commit();
-                    LOG.fine("User deleted: " + username);
-                    return Response.ok().build();
+                    break;
                 case "GBO":
-                    if(del.getString("role").equals("User")) {
-                        txn.delete(delKey);
-                        txn.commit();
-                        LOG.fine("User deleted: " + username);
-                        return Response.ok().build();
-                    } else {
+                    if(!delRole.equals("User"))
                         return Response.status(Status.BAD_REQUEST).entity("Error: Don't have permissions").build();
-                    }
+                    break;
                 case "GS":
-                    String delRole = del.getString("role");
-                    if(delRole.equals("User") || delRole.equals("GBO")) {
-                        txn.delete(delKey);
-                        txn.commit();
-                        LOG.fine("User deleted: " + username);
-                        return Response.ok().build();
-                    } else {
+                    if(!delRole.equals("User") && !delRole.equals("GBO"))
                         return Response.status(Status.BAD_REQUEST).entity("Error: Don't have permissions").build();
-                    }
-                case "SU":
-                    txn.delete(delKey);
-                    txn.commit();
-                    LOG.fine("User deleted: " + username);
-                    return Response.ok().build();
+                    break;
+                default:
+                    return Response.status(Status.BAD_REQUEST).entity("Error: Don't have permissions").build();
             }
-            return Response.status(Status.BAD_REQUEST).entity("Error: Don't have permissions").build();
+            txn.delete(delKey);
+            txn.commit();
+            LOG.fine("User deleted: " + username);
+            return Response.ok().build();
 
         } catch (Exception e) {
             txn.rollback();

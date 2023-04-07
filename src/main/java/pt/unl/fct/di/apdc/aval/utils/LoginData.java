@@ -19,4 +19,5 @@ public class LoginData {
     public boolean checkNull(String word){
         return word.isEmpty() || word==null;
     }
+
 }
