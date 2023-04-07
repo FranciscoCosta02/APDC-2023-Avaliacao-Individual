@@ -1,9 +1,7 @@
 package pt.unl.fct.di.apdc.aval.resources;
 
 import com.google.cloud.datastore.*;
-import org.apache.commons.codec.digest.DigestUtils;
-import pt.unl.fct.di.apdc.aval.utils.LoginData;
-
+import pt.unl.fct.di.apdc.aval.filters.Secured;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -12,36 +10,33 @@ import java.util.logging.Logger;
 
 @Path("/delete")
 public class DeleteResource {
-    private static final Logger LOG = Logger.getLogger(LoginResource.class.getName());
+    private static final Logger LOG = Logger.getLogger(DeleteResource.class.getName());
     private static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
-    private final KeyFactory userKeyFactory = datastore.newKeyFactory().setKind("User");
+    private final KeyFactory tokenKeyFactory = datastore.newKeyFactory().setKind("Token");
     public DeleteResource() {
     }
 
     @DELETE
-    @Path("/{username}")
+    @Secured
+    @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response deleteUser(LoginData user, @PathParam("username") String username) {
+    public Response deleteUser(@PathParam("id") String id, @FormParam("username") String username) {
         LOG.fine("Attempt to delete user: " + username);
         Transaction txn = datastore.newTransaction();
         try{
-            Key userKey = userKeyFactory.newKey(user.username);
-            Key delKey = userKeyFactory.newKey(username);
-            Entity user2 = txn.get(userKey);
+            Key userKey = tokenKeyFactory.newKey(id);
+            Key delKey = datastore.newKeyFactory().setKind("User").newKey(username);
+            Entity token = txn.get(userKey);
             Entity del = txn.get(delKey);
-            if(user2 == null || del == null){
+            if(token == null || del == null){
                 txn.rollback();
                 return Response.status(Status.BAD_REQUEST).entity("Error: Try again later").build();
             }
-            String confirmation = user2.getString("password");
-            if(!confirmation.equals(DigestUtils.sha512Hex(user.password)))
-                return Response.status(Status.NOT_ACCEPTABLE).entity("Error: Wrong password").build();
 
             String delRole = del.getString("role");
-            switch (user2.getString("role")){
+            switch (token.getString("role")){
                 case "User":
-                    if(!user.username.equals(username))
+                    if(!token.getString("username").equals(username))
                         return Response.status(Status.BAD_REQUEST).entity("Error: Don't have permissions").build();
                     break;
                 case "GBO":
@@ -52,6 +47,8 @@ public class DeleteResource {
                     if(!delRole.equals("User") && !delRole.equals("GBO"))
                         return Response.status(Status.BAD_REQUEST).entity("Error: Don't have permissions").build();
                     break;
+                case "SU":
+                    break;
                 default:
                     return Response.status(Status.BAD_REQUEST).entity("Error: Don't have permissions").build();
             }
@@ -59,7 +56,6 @@ public class DeleteResource {
             txn.commit();
             LOG.fine("User deleted: " + username);
             return Response.ok().build();
-
         } catch (Exception e) {
             txn.rollback();
             LOG.severe(e.getMessage());

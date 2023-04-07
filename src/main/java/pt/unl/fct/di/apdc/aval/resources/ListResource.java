@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 @Path("/list")
 public class ListResource {
-    private static final Logger LOG = Logger.getLogger(LoginResource.class.getName());
+    private static final Logger LOG = Logger.getLogger(ListResource.class.getName());
     private static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
     private final KeyFactory tokenKeyFactory = datastore.newKeyFactory().setKind("Token");
     private final Gson g = new Gson();

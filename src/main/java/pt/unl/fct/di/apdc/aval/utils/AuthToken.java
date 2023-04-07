@@ -14,9 +14,8 @@ public class AuthToken {
     public AuthToken() {
     }
 
-    public AuthToken(String username, String role) {
+    public AuthToken(String username) {
         this.username = username;
-        this.role = role;
         this.tokenID = UUID.randomUUID().toString();
         this.creationDate = System.currentTimeMillis();
         this.expirationDate = this.creationDate + AuthToken.EXPIRATION_TIME;

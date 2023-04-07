@@ -1,14 +1,9 @@
 package pt.unl.fct.di.apdc.aval.resources;
 
 import com.google.cloud.datastore.*;
-import com.google.gson.Gson;
-import org.apache.commons.codec.digest.DigestUtils;
-import pt.unl.fct.di.apdc.aval.utils.LoginData;
+import pt.unl.fct.di.apdc.aval.filters.Secured;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.logging.Logger;
@@ -17,29 +12,36 @@ import java.util.logging.Logger;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class LogoutResource {
 
-    private static final Logger LOG = Logger.getLogger(LoginResource.class.getName());
-    private static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
-    private final KeyFactory userKeyFactory = datastore.newKeyFactory().setKind("User");
-    private final Gson g = new Gson();
+    private static final Logger LOG = Logger.getLogger(LogoutResource.class.getName());
+    private static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService ();
+    private final KeyFactory tokenKeyFactory = datastore.newKeyFactory().setKind("Token");
 
     @POST
-    @Path("/")
+    @Secured
+    @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response login(LoginData user) {
-        LOG.fine("Attempt to login user: " + user.username);
-        Key userKey = userKeyFactory.newKey(user.username);
+    public Response logout(@PathParam("id") String id) {
+        Key tokenKey = tokenKeyFactory.newKey(id);
         Transaction txn = datastore.newTransaction();
-        try{
-            Entity user2 = txn.get(userKey);
-            if(user2 == null){
+        try {
+            Entity token = txn.get(tokenKey);
+            if (token == null) {
                 txn.rollback();
                 return Response.status(Response.Status.BAD_REQUEST).entity("Error: Try again later").build();
             }
-            String confirmation = user2.getString("password");
-            if(!confirmation.equals(DigestUtils.sha512Hex(user.password))) {
+            String username = token.getString("username");
+            txn.delete(tokenKey);
+            txn.commit();
+            LOG.fine("User logged out: " + username);
+            return Response.ok().build();
+        } catch (Exception e) {
+            txn.rollback();
+            LOG.severe(e.getMessage());
+            return Response.status(Response.Status.FORBIDDEN).build();
+        } finally {
+            if (txn.isActive()) {
                 txn.rollback();
-                return Response.status(Response.Status.BAD_REQUEST).entity("Error: Wrong password").build();
             }
+        }
     }
 }

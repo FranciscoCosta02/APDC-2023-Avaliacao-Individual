@@ -22,7 +22,7 @@ public class RegisterResource {
     }
 
     @POST
-    @Path("/")
+    @Path("")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response registerUser(UserData user) {
@@ -48,7 +48,6 @@ public class RegisterResource {
                     txn.rollback();
                     return Response.status(Status.NOT_ACCEPTABLE).entity("User already exists").build();
                 }
-
                 user2 = Entity.newBuilder(userKey).set("password", DigestUtils.sha512Hex(user.password))
                         .set("email",user.email).set("name", user.name)
                         .set("role", "User").set("active", false)

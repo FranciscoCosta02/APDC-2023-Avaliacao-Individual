@@ -39,8 +39,6 @@ public class LoginResource {
                           @Context HttpHeaders headers) {
         LOG.fine("Attempt to login user: " + user.username);
         Key userKey = userKeyFactory.newKey(user.username);
-        Key ctrlKey = datastore.newKeyFactory().addAncestors(PathElement.of("User", user.username))
-                .setKind("UserStats").newKey("counters");
         Key logKey = datastore.allocateId(
                 datastore.newKeyFactory().addAncestors(PathElement.of("User", user.username))
                         .setKind("UserLog").newKey()
@@ -51,12 +49,6 @@ public class LoginResource {
             if(user2 == null){
                 txn.rollback();
                 return Response.status(Response.Status.BAD_REQUEST).entity("Error: Try again later").build();
-            }
-            Entity stats = txn.get(ctrlKey);
-            if(stats == null) {
-                stats = Entity.newBuilder(ctrlKey)
-                        .set("user_first_login", Timestamp.now())
-                        .set("user_last_login", Timestamp.now()).build();
             }
             String confirmation = user2.getString("password");
             if(confirmation.equals(DigestUtils.sha512Hex(user.password))) {
@@ -69,34 +61,25 @@ public class LoginResource {
                         .set("user_login_city", headers.getHeaderString("X-AppEngine-City"))
                         .set("user_login_country", headers.getHeaderString("X-AppEngine-Country"))
                         .set("user_login_time", Timestamp.now()).build();
-
-                Entity ustats = Entity.newBuilder(ctrlKey)
-                        .set("user_first_login", stats.getTimestamp("user_first_login"))
-                        .set("user_last_login", Timestamp.now()).build();
-                AuthToken at = new AuthToken(user.username, user2.getString("role"));
+                AuthToken at = new AuthToken(user.username);
                 Key authKey = datastore.newKeyFactory().setKind("Token").newKey(at.tokenID);
                 Entity auth = txn.get(authKey);
                 while(auth != null) {
-                    at = new AuthToken(user.username, user2.getString("role"));
+                    at = new AuthToken(user.username);
                     authKey = datastore.newKeyFactory().setKind("Token").newKey(at.tokenID);
                     auth = txn.get(authKey);
                 }
                 auth = Entity.newBuilder(authKey)
                                 .set("username", at.username)
-                                .set("role", at.role)
+                                .set("role", user2.getString("role"))
                                 .set("creation_date", at.creationDate).set("expiration_data",at.expirationDate)
                                 .build();
-                txn.put(log, ustats, auth);
+                txn.put(log, auth);
                 txn.commit();
                 LOG.info("User " + user.username + " logged in sucessfully.");
                 return Response.ok(g.toJson(at)).build();
             } else {
-                Entity ustats = Entity.newBuilder(ctrlKey)
-                        .set("user_first_login", stats.getTimestamp("user_first_login"))
-                        .set("user_last_login", stats.getTimestamp("user_last_login"))
-                        .set("user_last_attempt", Timestamp.now()).build();
-                txn.put(ustats);
-                txn.commit();
+                txn.rollback();
                 LOG.warning("Wrong password for username: " + user.username);
                 return Response.status(Status.FORBIDDEN).build();
             }
