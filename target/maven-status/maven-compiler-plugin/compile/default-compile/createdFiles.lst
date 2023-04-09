@@ -1,0 +1,11 @@
+pt\unl\fct\di\apdc\aval\filters\AuthenticationFilter.class
+pt\unl\fct\di\apdc\aval\utils\AuthToken.class
+pt\unl\fct\di\apdc\aval\utils\UserData.class
+pt\unl\fct\di\apdc\aval\servlets\MediaResourceServlet.class
+pt\unl\fct\di\apdc\aval\resources\LogoutResource.class
+pt\unl\fct\di\apdc\aval\filters\Secured.class
+pt\unl\fct\di\apdc\aval\resources\DeleteResource.class
+pt\unl\fct\di\apdc\aval\resources\ListResource.class
+pt\unl\fct\di\apdc\aval\utils\LoginData.class
+pt\unl\fct\di\apdc\aval\resources\RegisterResource.class
+pt\unl\fct\di\apdc\aval\resources\LoginResource.class
