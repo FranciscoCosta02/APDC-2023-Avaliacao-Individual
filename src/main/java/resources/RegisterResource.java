@@ -22,14 +22,14 @@ public class RegisterResource {
     }
 
     @POST
-    @Path("")
+    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response registerUser(UserData user) {
             if(user.confirmInputs())
                 return Response.status(Status.BAD_REQUEST)
                     .entity("At least one input is empty").build();
-            if(user.emailValid())
+            if(!user.emailValid())
                 return Response.status(Status.NOT_ACCEPTABLE)
                         .entity("Email format is invalid").build();
             Response pwdValidation = user.pwdValid();
@@ -40,8 +40,7 @@ public class RegisterResource {
             Transaction txn = datastore.newTransaction();
             try{
                 Key userKey = userKeyFactory.newKey(user.username);
-                Key optionalKey = datastore.newKeyFactory().addAncestors(PathElement.of("User", user.username))
-                        .setKind("OptionalStats").newKey("optional");
+
 
                 Entity user2 = txn.get(userKey);
                 if(user2!=null) {
@@ -50,8 +49,10 @@ public class RegisterResource {
                 }
                 user2 = Entity.newBuilder(userKey).set("password", DigestUtils.sha512Hex(user.password))
                         .set("email",user.email).set("name", user.name)
-                        .set("role", "User").set("active", false)
-                        .set("public", false).set("timestamp", Timestamp.now()).build();
+                        .set("role", "User").set("activity", "inactive")
+                        .set("privacy", user.privacy).set("phone", user.phone)
+                        .set("workplace", user.workplace).set("address", user.address)
+                        .set("occupation", user.occupation).set("NIF", user.NIF).build();
                 txn.put(user2);
                 txn.commit();
                 LOG.fine("User registered: " + user.username);
@@ -67,59 +68,4 @@ public class RegisterResource {
 
             }
     }
-
-    @POST
-    @Path("/{role}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response registerSpecialUser(UserData user, @PathParam("role") String role, String specialPwd) {
-        if(user.confirmInputs())
-            return Response.status(Status.BAD_REQUEST)
-                    .entity("At least one input is empty").build();
-        if(user.emailValid())
-            return Response.status(Status.NOT_ACCEPTABLE)
-                    .entity("Email format is invalid").build();
-        Response pwdValidation = user.pwdValid();
-        if(pwdValidation.getStatus() != Status.OK.getStatusCode())
-            return pwdValidation;
-
-        LOG.fine("Attempt to register user: " + user.username);
-        Transaction txn = datastore.newTransaction();
-        try{
-            Key userKey = userKeyFactory.newKey(user.username);
-            Entity user2 = txn.get(userKey);
-            if(user2!=null) {
-                txn.rollback();
-                return Response.status(Status.NOT_ACCEPTABLE).entity("User already exists").build();
-            }
-            if(!role.equals("GS") && !role.equals("GBO"))
-                return Response.status(Status.NOT_ACCEPTABLE).entity("Role does not exist").build();
-
-            Key superKey = userKeyFactory.newKey("fd.costa");
-            Entity superU = txn.get(superKey);
-            if(specialPwd.equals(superU.getString("password"))) {
-                return Response.status(Status.NOT_ACCEPTABLE).entity("Special password is wrong").build();
-            }
-
-            user2 = Entity.newBuilder(userKey).set("password", DigestUtils.sha512Hex(user.password))
-                    .set("email",user.email).set("name", user.name)
-                    .set("role", role).set("active", false)
-                    .set("public", false).set("timestamp", Timestamp.now()).build();
-            txn.put(user2);
-            txn.commit();
-            LOG.fine("User registered: " + user.username);
-            return Response.ok().build();
-
-        } catch (Exception e) {
-            txn.rollback();
-            LOG.severe(e.getMessage());
-            return Response.status(Status.FORBIDDEN).build();
-        } finally {
-            if (txn.isActive()) {
-                txn.rollback();
-            }
-
-        }
-    }
-
 }

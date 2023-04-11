@@ -1,9 +1,11 @@
 package resources;
 
 import com.google.cloud.datastore.*;
-import filters.Secured;
+import com.google.gson.Gson;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.logging.Logger;
@@ -15,12 +17,14 @@ public class LogoutResource {
     private static final Logger LOG = Logger.getLogger(LogoutResource.class.getName());
     private static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService ();
     private final KeyFactory tokenKeyFactory = datastore.newKeyFactory().setKind("Token");
+    private final Gson g = new Gson();
 
-    @POST
-    @Secured
-    @Path("{id}")
+    @DELETE
+    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response logout(@PathParam("id") String id) {
+    public Response logout(@Context HttpServletRequest request) {
+        String id = request.getHeader("Authorization");
+        id = id.substring("Bearer".length()).trim();
         Key tokenKey = tokenKeyFactory.newKey(id);
         Transaction txn = datastore.newTransaction();
         try {
@@ -33,7 +37,7 @@ public class LogoutResource {
             txn.delete(tokenKey);
             txn.commit();
             LOG.fine("User logged out: " + username);
-            return Response.ok().build();
+            return Response.ok(g.toJson(username)).build();
         } catch (Exception e) {
             txn.rollback();
             LOG.severe(e.getMessage());

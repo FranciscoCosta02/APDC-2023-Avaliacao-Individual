@@ -22,7 +22,7 @@
 		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
 		<init-param>
 			<param-name>jersey.config.server.provider.classnames</param-name>
-			<param-value>pt.unl.fct.di.apdc.aval.filters.AdditionalResponseHeadersFilter</param-value>
+			<param-value>filters.AdditionalResponseHeadersFilter</param-value>
 		</init-param>
 		<init-param>
 			<param-name>jersey.config.servlet.filter.contextPath</param-name>
@@ -30,9 +30,7 @@
 		</init-param>
 		<init-param>
 			<param-name>jersey.config.server.provider.packages</param-name>
-			<param-value>pt.unl.fct.di.apdc.avalappengine-web.xml
-				logging.properties
-				web.xml.resources</param-value>
+			<param-value>resources</param-value>
 		</init-param>
 		<init-param>
 			<param-name>jersey.config.server.provider.scanning.recursive</param-name>
@@ -52,7 +50,7 @@
 
 	<servlet>
 		<servlet-name>servlet-storage</servlet-name>
-		<servlet-class>pt.unl.fct.di.apdc.aval.servlets.MediaResourceServlet</servlet-class>
+		<servlet-class>servlets.MediaResourceServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>

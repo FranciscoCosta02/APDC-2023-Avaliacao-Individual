@@ -30,9 +30,7 @@
 		</init-param>
 		<init-param>
 			<param-name>jersey.config.server.provider.packages</param-name>
-			<param-value>appengine-web.xml
-				logging.properties
-				web.xml.resources</param-value>
+			<param-value>resources</param-value>
 		</init-param>
 		<init-param>
 			<param-name>jersey.config.server.provider.scanning.recursive</param-name>

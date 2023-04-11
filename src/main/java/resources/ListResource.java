@@ -2,12 +2,13 @@ package resources;
 
 import com.google.cloud.datastore.*;
 import com.google.gson.Gson;
-import filters.Secured;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import com.google.cloud.datastore.StructuredQuery.CompositeFilter;
 
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -26,15 +27,18 @@ public class ListResource {
     }
 
     @GET
-    @Secured
-    @Path("{id}")
+    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response listUsers(@PathParam("id") String id) {
+    public Response listUsers(@Context HttpServletRequest request) {
+        String id = request.getHeader("Authorization");
         LOG.fine("Attempt to list users");
         Transaction txn = datastore.newTransaction();
         try {
+            id = id.substring("Bearer".length()).trim();
             Key tokenKey = tokenKeyFactory.newKey(id);
             Entity token = txn.get(tokenKey);
+            if(token == null)
+                return Response.status(Status.BAD_REQUEST).entity("Error: Try again later").build();
 
             Query<Entity> query;
             QueryResults<Entity> results;
@@ -45,9 +49,9 @@ public class ListResource {
                             .setKind("User")
                             .setFilter(
                                     CompositeFilter.and(
-                                            PropertyFilter.ge("role", "User"),
-                                            PropertyFilter.ge("active", true),
-                                            PropertyFilter.ge("public", true)
+                                            PropertyFilter.eq("role", "User"),
+                                            PropertyFilter.eq("activity", "active"),
+                                            PropertyFilter.eq("privacy", "public")
                                     )
                             ).build();
                     break;
@@ -55,7 +59,7 @@ public class ListResource {
                     query = Query.newEntityQueryBuilder()
                             .setKind("User")
                             .setFilter(
-                                    PropertyFilter.ge("role", "User")
+                                    PropertyFilter.eq("role", "User")
                             ).build();
                     break;
                 case "GS":
@@ -86,7 +90,7 @@ public class ListResource {
         } catch (Exception e) {
             txn.rollback();
             LOG.severe(e.getMessage());
-            return Response.status(Status.FORBIDDEN).build();
+            return Response.status(Status.FORBIDDEN).entity(e.getMessage()).build();
         } finally {
             if (txn.isActive()) {
                 txn.rollback();

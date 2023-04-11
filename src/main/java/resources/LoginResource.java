@@ -31,7 +31,7 @@ public class LoginResource {
     }
 
     @POST
-    @Path("")
+    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_FORM_URLENCODED)
     public Response login(LoginData user,

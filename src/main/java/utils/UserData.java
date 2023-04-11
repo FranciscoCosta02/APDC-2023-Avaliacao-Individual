@@ -2,6 +2,8 @@ package utils;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class UserData {
@@ -11,18 +13,33 @@ public class UserData {
     public String confirmation;
     public String email;
     public String name;
+    public String privacy;
+    public String phone;
+    public String workplace;
+    public String address;
+    public String occupation;
+    public String NIF;
+
 
     public UserData(){}
-    public UserData(String username, String email, String name, String password, String confirmation) {
+    public UserData(String username, String email, String name, String password, String confirmation,
+                    String privacy, String phone, String workplace, String address, String occupation,
+                    String NIF) {
         this.username = username;
         this.password = password;
         this.confirmation = confirmation;
         this.email=email;
         this.name = name;
+        this.privacy=privacy;
+        this.phone = phone;
+        this.workplace = workplace;
+        this.address = address;
+        this.occupation= occupation;
+        this.NIF = NIF;
     }
 
     public boolean confirmInputs() {
-        return checkNull(username) || checkNull(password) || checkNull(email) || checkNull(name);
+        return checkNull(username) || checkNull(password) || checkNull(email) || checkNull(name) || checkNull(privacy);
     }
 
     public boolean checkNull(String word){
@@ -31,7 +48,7 @@ public class UserData {
 
     public boolean emailValid() {
         String[] e = email.split("@");
-        if(e.length != 2) return false;
+        if(e.length != 2 || e[1].equals("")) return false;
         String domain = e[1];
         String[] d = domain.split("\\.");
         return !checkNull(d[d.length-1]);
@@ -58,4 +75,5 @@ public class UserData {
                     .entity("Password must have at least 1 digit character").build();
         return Response.ok().entity("Password is valid").build();
     }
+
 }

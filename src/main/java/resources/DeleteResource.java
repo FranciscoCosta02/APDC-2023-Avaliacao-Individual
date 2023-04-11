@@ -1,8 +1,11 @@
 package resources;
 
 import com.google.cloud.datastore.*;
-import filters.Secured;
+import com.google.gson.Gson;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -13,20 +16,23 @@ public class DeleteResource {
     private static final Logger LOG = Logger.getLogger(DeleteResource.class.getName());
     private static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
     private final KeyFactory tokenKeyFactory = datastore.newKeyFactory().setKind("Token");
+    private final Gson g = new Gson();
     public DeleteResource() {
     }
 
     @DELETE
-    @Secured
-    @Path("{id}")
+    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteUser(@PathParam("id") String id, @FormParam("username") String username) {
+    public Response deleteUser(@Context HttpServletRequest request) {
+        String id = request.getHeader("Authorization");
+        String username = request.getHeader("Username");
         LOG.fine("Attempt to delete user: " + username);
         Transaction txn = datastore.newTransaction();
         try{
-            Key userKey = tokenKeyFactory.newKey(id);
+            id = id.substring("Bearer".length()).trim();
+            Key tokenKey = tokenKeyFactory.newKey(id);
             Key delKey = datastore.newKeyFactory().setKind("User").newKey(username);
-            Entity token = txn.get(userKey);
+            Entity token = txn.get(tokenKey);
             Entity del = txn.get(delKey);
             if(token == null || del == null){
                 txn.rollback();
@@ -52,10 +58,10 @@ public class DeleteResource {
                 default:
                     return Response.status(Status.BAD_REQUEST).entity("Error: Don't have permissions").build();
             }
-            txn.delete(delKey);
+            txn.delete(delKey, tokenKey);
             txn.commit();
             LOG.fine("User deleted: " + username);
-            return Response.ok().build();
+            return Response.ok(g.toJson(username)).build();
         } catch (Exception e) {
             txn.rollback();
             LOG.severe(e.getMessage());
