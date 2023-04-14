@@ -3,6 +3,7 @@ package resources;
 import com.google.cloud.datastore.*;
 import com.google.cloud.datastore.Entity.Builder;
 import org.apache.commons.codec.digest.DigestUtils;
+import utils.UserData;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -26,12 +27,9 @@ public class UpdateResource {
     @PUT
     @Path("/attributes")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateUser(@Context HttpServletRequest request) {
+    public Response updateUser(@Context HttpServletRequest request, UserData user) {
         String id = request.getHeader("Authorization");
         id = id.substring("Bearer".length()).trim();
-        String username = request.getHeader("Username");
-        String attribute = request.getHeader("Attribute");
-        String change = request.getHeader("Change");
         Transaction txn = datastore.newTransaction();
         try{
             Key tokenKey = tokenKeyFactory.newKey(id);
@@ -40,30 +38,25 @@ public class UpdateResource {
                 txn.rollback();
                 return Response.ok(Status.BAD_REQUEST).entity("Not a valid Login.").build();
             }
-            Entity userToUpdate = datastore.get(datastore.newKeyFactory().setKind("User").newKey(username));
+            Key updateKey = datastore.newKeyFactory().setKind("User").newKey(user.username);
+            Entity userToUpdate = datastore.get(updateKey);
             if(userToUpdate == null) {
                 txn.rollback();
                 return Response.status(Status.BAD_REQUEST).entity("Error: Try again later").build();
             }
-            LOG.fine("Attempt to update user: " + username);
-            if(attribute.equals("username") || attribute.equals("password")) {
-                txn.rollback();
-                return Response.status(Status.BAD_REQUEST).entity("Cannot change attribute").build();
-            }
-
+            LOG.fine("Attempt to update user: " + user.username);
             String delRole = userToUpdate.getString("role");
             switch (token.getString("role")) {
                 case "User":
-                    if(!username.equals(token.getString("username"))
-                            || attribute.equals("email") || attribute.equals("name"))
+                    if(!user.username.equals(token.getString("username")))
                         return Response.status(Status.BAD_REQUEST).entity("Don't have permissions").build();
                     break;
                 case "GBO":
-                    if(!delRole.equals("USER"))
+                    if(!delRole.equals("User"))
                         return Response.status(Status.BAD_REQUEST).entity("Error: Don't have permissions").build();
                     break;
                 case "GS":
-                    if(!delRole.equals("USER") && !delRole.equals("GBO"))
+                    if(!delRole.equals("User") && !delRole.equals("GBO"))
                         return Response.status(Status.BAD_REQUEST).entity("Error: Don't have permissions").build();
                     break;
                 case "SU":
@@ -73,19 +66,17 @@ public class UpdateResource {
                 default:
                     return Response.status(Status.BAD_REQUEST).entity("Error: Try again later").build();
             }
-            Builder newUB = Entity.newBuilder(userToUpdate.getKey());
-            Map<String, Value<?>> properties = userToUpdate.getProperties();
-            for(String att: properties.keySet()) {
-                if(att.equals(attribute)) {
-                    newUB.set(attribute, change);
-                } else {
-                    newUB.set(att, userToUpdate.getString(att));
-                }
-            }
-            Entity newU = newUB.build();
-            datastore.update(newU);
+            Entity user2 = Entity.newBuilder(updateKey)
+                    .set("password", user.password)
+                    .set("email",user.email).set("name", user.name)
+                    .set("role", user.role).set("activity", user.activity)
+                    .set("privacy", user.privacy).set("phone", user.phone)
+                    .set("workplace", user.workplace).set("address", user.address)
+                    .set("occupation", user.occupation).set("NIF", user.NIF)
+                    .set("photo", user.photo).build();
+            datastore.update(user2);
             txn.commit();
-            LOG.fine("User updated: " + username);
+            LOG.fine("User updated: " + user.username);
             return Response.ok().build();
         } catch (Exception e) {
             txn.rollback();
@@ -127,7 +118,7 @@ public class UpdateResource {
     public Response updatePwd(@Context HttpServletRequest request) {
         String id = request.getHeader("Authorization");
         id = id.substring("Bearer".length()).trim();
-        String password = request.getHeader("Password");
+        String password = request.getHeader("oldPwd");
         String newPwd = request.getHeader("newPwd");
         String confirmation = request.getHeader("Confirmation");
         Transaction txn = datastore.newTransaction();
@@ -157,7 +148,7 @@ public class UpdateResource {
             Map<String, Value<?>> properties = user.getProperties();
             for(String attribute: properties.keySet()) {
                 if(attribute.equals("password")) {
-                    newUB.set("password", newPwd);
+                    newUB.set("password", DigestUtils.sha512Hex(newPwd));
                 } else {
                     newUB.set(attribute, user.getString(attribute));
                 }
@@ -166,7 +157,7 @@ public class UpdateResource {
             datastore.update(newU);
             txn.commit();
             LOG.fine("User updated: " + username);
-            return Response.ok(Status.OK).build();
+            return Response.ok().build();
         } catch (Exception e) {
             txn.rollback();
             LOG.severe(e.getMessage());

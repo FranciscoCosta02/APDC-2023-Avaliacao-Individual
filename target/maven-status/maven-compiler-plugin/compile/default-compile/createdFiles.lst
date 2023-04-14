@@ -1,12 +1,11 @@
+resources\DeleteResource.class
+resources\ListResource.class
+resources\UpdateResource.class
 resources\LogoutResource.class
 resources\LoginResource.class
-resources\HelloResource.class
 resources\RegisterResource.class
-resources\DeleteResource.class
 utils\LoginData.class
 utils\AuthToken.class
 utils\UserData.class
-resources\ListResource.class
 filters\AdditionalResponseHeadersFilter.class
 servlets\MediaResourceServlet.class
-resources\UpdateResource.class

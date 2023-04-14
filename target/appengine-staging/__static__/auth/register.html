@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+    <title>Register</title>
+    <script src="auth.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <h1>Register User</h1>
+    <table>
+        <tr>
+            <td style="font-weight: bold;">Required data:</td>
+        </tr>
+        <tr>
+            <td>
+                <form id="registerForm" onsubmit="register()" class="center">
+                    <label for="username">Username:</label><br>
+                    <input type="text" id="username" name="username" required>
+                    <br>
+                    <label for="name">Name:</label><br>
+                    <input type="text" id="name" name="name" required>
+                    <br>
+                    <label for="email">Email:</label><br>
+                    <input type="email" id="email" name="email" required>
+                    <br>
+                    <label for="password">Password:</label><br>
+                    <input type="password" id="password" name="password" required>
+                    <br>
+                    <label for="password">Confirm password:</label><br>
+                    <input type="password" id="confirmation" name="confirmation" required>
+                    <br>
+                    <br>
+                    <label style="font-weight: bold;">Optional data:</label>
+                    <br>
+                    <label for="privacy">Privacy:</label><br>
+                    <select name="privacy" id="privacy" class="custom-select">
+                        <option value ="Public">Public</option>
+                        <option value ="Private">Private</option>
+                    </select>
+                    <br>
+                    <label for="phone">Phone:</label><br>
+                    <input type="text" id="phone" name="phone">
+                    <br>
+                    <label for="workplace">Workplace:</label><br>
+                    <input type="text" id="workplace" name="workplace">
+                    <br>
+                    <label for="occupation">Occupation:</label><br>
+                    <input type="text" id="occupation" name="occupation">
+                    <br>
+                    <label for="address">Address:</label><br>
+                    <input type="text" id="address" name="address">
+                    <br>
+                    <label for="NIF">NIF:</label><br>
+                    <input type="text" id="NIF" name="NIF">
+                    <br>
+                    <label for="photo">Photo:</label><br>
+                    <input type="file" id="photo" name="photo">
+                    <br>
+                    <br>
+                    <button type="submit" style="font-size: 24px">Register</button>
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href='./../index.html'>Back</a>
+            </td>
+        </tr>
+    </table>
+</body>

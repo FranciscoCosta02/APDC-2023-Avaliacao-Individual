@@ -47,12 +47,16 @@ public class RegisterResource {
                     txn.rollback();
                     return Response.status(Status.NOT_ACCEPTABLE).entity("User already exists").build();
                 }
+                if(user.checkNull(user.privacy)) {
+                    user.privacy = "public";
+                }
                 user2 = Entity.newBuilder(userKey).set("password", DigestUtils.sha512Hex(user.password))
                         .set("email",user.email).set("name", user.name)
-                        .set("role", "User").set("activity", "inactive")
+                        .set("role", "User").set("activity", "Inactive")
                         .set("privacy", user.privacy).set("phone", user.phone)
                         .set("workplace", user.workplace).set("address", user.address)
-                        .set("occupation", user.occupation).set("NIF", user.NIF).build();
+                        .set("occupation", user.occupation).set("NIF", user.NIF)
+                        .set("photo", user.photo).build();
                 txn.put(user2);
                 txn.commit();
                 LOG.fine("User registered: " + user.username);

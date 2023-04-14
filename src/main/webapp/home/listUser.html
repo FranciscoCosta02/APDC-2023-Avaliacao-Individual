@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+    <title>List Users</title>
+    <script src="script.js" type="text/javascript"></script>
+    <script>
+        const url = '/rest/list';
+        fetch(url, {
+            method: 'GET',
+            headers:{
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+        .then (response => response.json())
+        .then (data => {
+        console.log(JSON.stringify(data));
+        document.getElementById("username").value=properties;
+        document.getElementById("password").value=properties.password.value;
+        document.getElementById("role").value=properties.role.value;
+        document.getElementById('privacy').value=properties.privacy.value;
+        document.getElementById("activity").value=properties.activity.value;
+        document.getElementById("name").value=properties.name.value;
+        document.getElementById("email").value=properties.email.value;
+        document.getElementById("phone").value=properties.phone.value;
+        document.getElementById("workplace").value=properties.workplace.value;
+        document.getElementById("occupation").value=properties.occupation.value;
+        document.getElementById("address").value=properties.address.value;
+        document.getElementById("NIF").value=properties.NIF.value;
+        document.getElementById("photo").value=properties.photo.value;
+        })
+        .catch(error => {console.log(error)});
+    </script>
+</head>
+
+<body>
+    <h1>List Users</h1>
+
+</body>

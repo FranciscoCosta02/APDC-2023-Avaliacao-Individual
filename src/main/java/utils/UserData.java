@@ -13,29 +13,35 @@ public class UserData {
     public String confirmation;
     public String email;
     public String name;
+    public String role;
     public String privacy;
+    public String activity;
     public String phone;
     public String workplace;
     public String address;
     public String occupation;
     public String NIF;
+    public String photo;
 
 
     public UserData(){}
     public UserData(String username, String email, String name, String password, String confirmation,
-                    String privacy, String phone, String workplace, String address, String occupation,
-                    String NIF) {
+                    String role, String privacy, String activity, String phone, String workplace, String address,
+                    String occupation, String NIF, String photo) {
         this.username = username;
         this.password = password;
         this.confirmation = confirmation;
         this.email=email;
         this.name = name;
+        this.role = role;
         this.privacy=privacy;
+        this.activity = activity;
         this.phone = phone;
         this.workplace = workplace;
         this.address = address;
         this.occupation= occupation;
         this.NIF = NIF;
+        this.photo = photo;
     }
 
     public boolean confirmInputs() {

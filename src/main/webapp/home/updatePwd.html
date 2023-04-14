@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+    <title>Register</title>
+    <script src="script.js" type="text/javascript"></script>
+</head>
+
+<body>
+<h1>Update password</h1>
+<table>
+    <tr>
+        <td>
+            <form id="registerForm" onsubmit="updatePWD()" class="center">
+                <label for="oldPwd">Old Password:</label><br>
+                <input type="password" id="oldPwd" name="oldPwd" required>
+                <br>
+                <label for="password">New Password:</label><br>
+                <input type="password" id="password" name="newPwd" required>
+                <br>
+                <label for="password">Confirm new password:</label><br>
+                <input type="password" id="confirmation" name="confirmation" required>
+                <br>
+                <br>
+                <button type="submit" style="font-size: 24px">Update password</button>
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href='./home.html'>Back</a>
+        </td>
+    </tr>
+</table>
+</body>

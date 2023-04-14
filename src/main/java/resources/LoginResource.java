@@ -39,10 +39,6 @@ public class LoginResource {
                           @Context HttpHeaders headers) {
         LOG.fine("Attempt to login user: " + user.username);
         Key userKey = userKeyFactory.newKey(user.username);
-        Key logKey = datastore.allocateId(
-                datastore.newKeyFactory().addAncestors(PathElement.of("User", user.username))
-                        .setKind("UserLog").newKey()
-        );
         Transaction txn = datastore.newTransaction();
         try{
             Entity user2 = txn.get(userKey);
@@ -52,29 +48,21 @@ public class LoginResource {
             }
             String confirmation = user2.getString("password");
             if(confirmation.equals(DigestUtils.sha512Hex(user.password))) {
-                Entity log = Entity.newBuilder(logKey)
-                        .set("user_login_ip", request.getRemoteAddr())
-                        .set("user_login_host", request.getRemoteHost())
-                        .set("user_login_latlon",
-                                StringValue.newBuilder(headers.getHeaderString("X-AppEngine-CityLatLong"))
-                                        .setExcludeFromIndexes(true).build())
-                        .set("user_login_city", headers.getHeaderString("X-AppEngine-City"))
-                        .set("user_login_country", headers.getHeaderString("X-AppEngine-Country"))
-                        .set("user_login_time", Timestamp.now()).build();
-                AuthToken at = new AuthToken(user.username);
+                String role = user2.getString("role");
+                AuthToken at = new AuthToken(user.username, role);
                 Key authKey = datastore.newKeyFactory().setKind("Token").newKey(at.tokenID);
                 Entity auth = txn.get(authKey);
                 while(auth != null) {
-                    at = new AuthToken(user.username);
+                    at = new AuthToken(user.username, role);
                     authKey = datastore.newKeyFactory().setKind("Token").newKey(at.tokenID);
                     auth = txn.get(authKey);
                 }
                 auth = Entity.newBuilder(authKey)
                                 .set("username", at.username)
-                                .set("role", user2.getString("role"))
-                                .set("creation_date", at.creationDate).set("expiration_data",at.expirationDate)
+                                .set("role", role)
+                                .set("creation_date", at.creationDate).set("expiration_date",at.expirationDate)
                                 .build();
-                txn.put(log, auth);
+                txn.put(auth);
                 txn.commit();
                 LOG.info("User " + user.username + " logged in sucessfully.");
                 return Response.ok(g.toJson(at)).build();

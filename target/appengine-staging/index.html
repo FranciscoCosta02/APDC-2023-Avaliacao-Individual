@@ -3,6 +3,7 @@
   <head>
     <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
     <title>My First Web App </title>
+    <script src="auth/auth.js" type="text/javascript"></script>
   </head>
 
   <body>
@@ -13,14 +14,11 @@
         <td colspan="2" style="font-weight:bold;">Available Services:</td>        
       </tr>
       <tr>
-        <td><a href='/pages/register'>Register</a></td><td>(register)</td>
+        <td><button type='button' onclick='GoToRegister()'>Register</button></td>
       </tr>
       <tr>
-        <td><a href='/pages/login'>Login</a></td><td>(login)</td>
+        <td><button type='button' onclick='GoToLogin()'>Login</button></td>
       </tr>
     </table>
   </body>
-  <footer>
-  	Copyright: FCT NOVA 2023
-  </footer>
 </html>

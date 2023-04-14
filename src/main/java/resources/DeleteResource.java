@@ -21,11 +21,10 @@ public class DeleteResource {
     }
 
     @DELETE
-    @Path("/")
+    @Path("/{username}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteUser(@Context HttpServletRequest request) {
+    public Response deleteUser(@Context HttpServletRequest request, @PathParam("username") String username) {
         String id = request.getHeader("Authorization");
-        String username = request.getHeader("Username");
         LOG.fine("Attempt to delete user: " + username);
         Transaction txn = datastore.newTransaction();
         try{
@@ -38,7 +37,6 @@ public class DeleteResource {
                 txn.rollback();
                 return Response.status(Status.BAD_REQUEST).entity("Error: Try again later").build();
             }
-
             String delRole = del.getString("role");
             switch (token.getString("role")){
                 case "User":
@@ -58,10 +56,10 @@ public class DeleteResource {
                 default:
                     return Response.status(Status.BAD_REQUEST).entity("Error: Don't have permissions").build();
             }
-            txn.delete(delKey, tokenKey);
+            txn.delete(delKey);
             txn.commit();
             LOG.fine("User deleted: " + username);
-            return Response.ok(g.toJson(username)).build();
+            return Response.ok().build();
         } catch (Exception e) {
             txn.rollback();
             LOG.severe(e.getMessage());
