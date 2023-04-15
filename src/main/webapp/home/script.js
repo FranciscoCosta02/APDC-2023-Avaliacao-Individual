@@ -61,7 +61,7 @@ function deleteOther() {
                 window.location.href = "./../index.html";
             } else {
                 alert("User deleted");
-                window.location.href = "./home.html";
+                GoToCorrectHome();
             }
         } else {
             alert("Error");
@@ -119,7 +119,7 @@ function updatePWD() {
         if(response.ok) {
             console.log("Password updated")
             alert("Password updated!")
-            window.location.href = "./home.html";
+            GoToCorrectHome();
         } else {
             alert("Error")
         }
@@ -222,7 +222,7 @@ function updateUser() {
             }
             console.log("User updated")
             alert("User updated!")
-            window.location.href = "./home.html";
+            GoToCorrectHome();
         } else {
             alert("Error")
         }
@@ -234,3 +234,15 @@ function listUsers() {
     window.location.href = "./listUser.html"
 }
 
+function GoToCorrectHome() {
+    const role = localStorage.getItem("role");
+    if(role == "User") {
+        window.location.href = "./../home/homeUser.html";
+    } else {
+        if(role == "SU") {
+            window.location.href = "./../home/homeSU.html";
+        } else {
+            window.location.href = "./../home/home.html";
+        }
+    }
+}

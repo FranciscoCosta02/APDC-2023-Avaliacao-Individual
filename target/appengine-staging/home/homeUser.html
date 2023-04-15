@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+    <title>Home Page</title>
+    <script src="script.js" type="text/javascript"></script>
+    <script>
+        const url = '/rest/get/';
+        const bucket = "strong-surfer-379310.appspot.com";
+        fetch(url + localStorage.getItem("username"), {
+            method: 'GET'
+        })
+        .then (response => response.json())
+        .then (data => {
+            var properties = data.properties;
+            const filename = properties.photo.value;
+            document.getElementById("username").value=localStorage.getItem("username");
+            document.getElementById("password").value=properties.password.value;
+            document.getElementById("role").value=properties.role.value;
+            document.getElementById('privacy').value=properties.privacy.value;
+            document.getElementById("activity").value=properties.activity.value;
+            document.getElementById("name").value=properties.name.value;
+            document.getElementById("email").value=properties.email.value;
+            document.getElementById("phone").value=properties.phone.value;
+            document.getElementById("workplace").value=properties.workplace.value;
+            document.getElementById("occupation").value=properties.occupation.value;
+            document.getElementById("address").value=properties.address.value;
+            document.getElementById("NIF").value=properties.NIF.value;
+            if(filename == null || filename == "") {
+                console.log("NO PHOTO AVAILABLE");
+            } else {
+                var request = new XMLHttpRequest();
+                request.open("GET", "/gcs/" + bucket + "/" + filename, true);
+                request.responseType = 'blob';
+                request.addEventListener('load', function() {
+                    if (request.status === 200) {
+                        var blob = request.response;
+                        var imageUrl = URL.createObjectURL(blob);
+                        var img = document.createElement('img');
+                        img.src = imageUrl;
+                        document.body.appendChild(img);
+                    } else {
+                        console.log('Image load error');
+                    }
+                });
+                request.send();
+            }})
+    </script>
+</head>
+<body>
+<h1>Welcome to your home page!</h1>
+
+<table>
+    <tr>
+        <td colspan="2" style="font-weight:bold;">Available Services:</td>
+    </tr>
+    <div class="topnav">
+        <td><button type='button' onclick='listUsers()'>List Users</button></td>
+
+        <td><button type='button' onclick="GoToUpdatePWD()">Update Password</button></td>
+
+        <td><button type='button' onclick="showToken()">Show Token</button></td>
+
+        <td><button type='button' onclick='deleteUser()'>Delete User</button></td>
+
+        <td><button type='button' onclick='logout()'>Logout</button></td>
+    </div>
+</table>
+<table>
+    <tr>
+        <td>
+            <br>
+            <img id="img" alt="Photo">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <br>
+            <form id="updateForm" onsubmit="updateUser()" class="center">
+                <label for="username">Username:</label><br>
+                <input type="text" id="username" name="username" disabled>
+                <br>
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password" disabled>
+                <br>
+                <label for="activity">Activity:</label><br>
+                <input type="text" id="activity" name="activity" disabled>
+                <br>
+                <label for="role">Role:</label><br>
+                <input type="text" id="role" name="role" disabled>
+                <br>
+                <label for="name">Name:</label><br>
+                <input type="text" id="name" name="name" required>
+                <br>
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email" required>
+                <br>
+                <label for="privacy">Privacy:</label><br>
+                <select name="privacy" id="privacy" class="custom-select">
+                    <option value ="Public">Public</option>
+                    <option value ="Private">Private</option>
+                </select>
+                <br>
+                <label for="phone">Phone:</label><br>
+                <input type="text" id="phone" name="phone">
+                <br>
+                <label for="workplace">Workplace:</label><br>
+                <input type="text" id="workplace" name="workplace">
+                <br>
+                <label for="occupation">Occupation:</label><br>
+                <input type="text" id="occupation" name="occupation">
+                <br>
+                <label for="address">Address:</label><br>
+                <input type="text" id="address" name="address">
+                <br>
+                <label for="NIF">NIF:</label><br>
+                <input type="text" id="NIF" name="NIF">
+                <br>
+                <label for="photo">Photo:</label><br>
+                <input type="file" id="photo" name="photo">
+                <br>
+                <br>
+                <button type="submit" style="font-size: 24px">Update</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>

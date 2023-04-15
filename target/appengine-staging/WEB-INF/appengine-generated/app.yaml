@@ -3,7 +3,7 @@ inbound_services:
 - warmup
 auto_id_policy: default
 beta_settings:
-  'source_reference': 'https://github.com/FranciscoCosta02/adcAval.git#d3ab5816c2e6709a276e01c7e536c5f650175b0a'
+  'source_reference': 'https://github.com/FranciscoCosta02/adcAval.git#19f18b2710902f0c4dad0ce08871c546b192357f'
 handlers:
 - url: (/secret/.*/)
   static_files: __static__\1index.html

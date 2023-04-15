@@ -4,21 +4,21 @@
   <context-param>
     <param-name>org.eclipse.jetty.tlds</param-name>
     <param-value><![CDATA[
-    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/scriptfree.tld",
+    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/fmt-1_0.tld",
+    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/permittedTaglibs.tld",
+    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/c-1_0-rt.tld",
+    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/c-1_0.tld",
+    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/x-1_0.tld",
+    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/sql-1_0.tld",
+    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/fn.tld",
+    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/c.tld",
     "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/sql.tld",
     "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/x.tld",
+    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/scriptfree.tld",
+    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/x-1_0-rt.tld",
     "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/fmt-1_0-rt.tld",
     "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/sql-1_0-rt.tld",
-    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/fmt.tld",
-    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/fmt-1_0.tld",
-    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/c-1_0-rt.tld",
-    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/permittedTaglibs.tld",
-    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/c-1_0.tld",
-    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/fn.tld",
-    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/sql-1_0.tld",
-    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/x-1_0.tld",
-    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/x-1_0-rt.tld",
-    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/c.tld"]]></param-value>
+    "jar:${WAR.uri}/WEB-INF/lib/jstl-1.2.jar!/META-INF/fmt.tld"]]></param-value>
   </context-param>
   <context-param>
     <param-name>org.eclipse.jetty.resources</param-name>
@@ -30,24 +30,24 @@
   </context-param>
   <servlet>
     <servlet-name>MainServices</servlet-name>
-    <servlet-class origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/avalADC/target/appengine-staging/WEB-INF/web.xml):0">org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-    <init-param origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/avalADC/target/appengine-staging/WEB-INF/web.xml):1">
+    <servlet-class origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/adcAval/target/appengine-staging/WEB-INF/web.xml):0">org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+    <init-param origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/adcAval/target/appengine-staging/WEB-INF/web.xml):1">
       <param-name>jersey.config.server.tracing.type</param-name>
       <param-value>ALL</param-value>
     </init-param>
-    <init-param origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/avalADC/target/appengine-staging/WEB-INF/web.xml):2">
+    <init-param origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/adcAval/target/appengine-staging/WEB-INF/web.xml):2">
       <param-name>jersey.config.server.provider.classnames</param-name>
       <param-value>filters.AdditionalResponseHeadersFilter</param-value>
     </init-param>
-    <init-param origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/avalADC/target/appengine-staging/WEB-INF/web.xml):3">
+    <init-param origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/adcAval/target/appengine-staging/WEB-INF/web.xml):3">
       <param-name>jersey.config.server.provider.scanning.recursive</param-name>
       <param-value>false</param-value>
     </init-param>
-    <init-param origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/avalADC/target/appengine-staging/WEB-INF/web.xml):4">
+    <init-param origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/adcAval/target/appengine-staging/WEB-INF/web.xml):4">
       <param-name>jersey.config.servlet.filter.contextPath</param-name>
       <param-value>/rest/*</param-value>
     </init-param>
-    <init-param origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/avalADC/target/appengine-staging/WEB-INF/web.xml):5">
+    <init-param origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/adcAval/target/appengine-staging/WEB-INF/web.xml):5">
       <param-name>jersey.config.server.provider.packages</param-name>
       <param-value>resources</param-value>
     </init-param>
@@ -56,14 +56,14 @@
   </servlet>
   <servlet>
     <servlet-name>servlet-storage</servlet-name>
-    <servlet-class origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/avalADC/target/appengine-staging/WEB-INF/web.xml):6">servlets.MediaResourceServlet</servlet-class>
+    <servlet-class origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/adcAval/target/appengine-staging/WEB-INF/web.xml):6">servlets.MediaResourceServlet</servlet-class>
     <async-supported>false</async-supported>
   </servlet>
-  <servlet-mapping origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/avalADC/target/appengine-staging/WEB-INF/web.xml):7">
+  <servlet-mapping origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/adcAval/target/appengine-staging/WEB-INF/web.xml):7">
     <servlet-name>MainServices</servlet-name>
     <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
-  <servlet-mapping origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/avalADC/target/appengine-staging/WEB-INF/web.xml):8">
+  <servlet-mapping origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/adcAval/target/appengine-staging/WEB-INF/web.xml):8">
     <servlet-name>servlet-storage</servlet-name>
     <url-pattern>/gcs/*</url-pattern>
   </servlet-mapping>
@@ -88,7 +88,7 @@
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>Restricted Area</web-resource-name>
-      <url-pattern origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/avalADC/target/appengine-staging/WEB-INF/web.xml):11">/secret/*</url-pattern>
+      <url-pattern origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/adcAval/target/appengine-staging/WEB-INF/web.xml):11">/secret/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>admin</role-name>
@@ -266,11 +266,11 @@
     <tracking-mode>COOKIE</tracking-mode>
     <tracking-mode>URL</tracking-mode>
   </session-config>
-  <error-page origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/avalADC/target/appengine-staging/WEB-INF/web.xml):51">
+  <error-page origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/adcAval/target/appengine-staging/WEB-INF/web.xml):51">
     <error-code>500</error-code>
     <location>/error/500.html</location>
   </error-page>
-  <error-page origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/avalADC/target/appengine-staging/WEB-INF/web.xml):52">
+  <error-page origin="WebDescriptor(file:///C:/Users/LMkik/OneDrive/Documentos/Escola/IP/Trabalhos/adcAval/target/appengine-staging/WEB-INF/web.xml):52">
     <error-code>404</error-code>
     <location>/error/404.html</location>
   </error-page>

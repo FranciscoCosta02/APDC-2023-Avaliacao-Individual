@@ -106,10 +106,12 @@ function login() {
             localStorage.setItem("role", data.role);
             if(data.role == "User") {
                 window.location.href = "./../home/homeUser.html";
-            } else if(data.role == "SU") {
-                window.location.href = "./../home/homeSU.html";
             } else {
+                if(data.role == "SU") {
+                window.location.href = "./../home/homeSU.html";
+                } else {
                 window.location.href = "./../home/home.html";
+                }
             }
         } else {
             alert("Login Failed!")
