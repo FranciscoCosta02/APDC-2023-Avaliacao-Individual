@@ -11,14 +11,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.logging.Logger;
 
-@Path("/get")
-public class GetResource {
-    private static final Logger LOG = Logger.getLogger(LoginResource.class.getName());
-    private static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
-    private static final KeyFactory userKeyFactory = datastore.newKeyFactory().setKind("User");
-    private final Gson g = new Gson();
+        @Path("/get")
+        public class GetResource {
+            private static final Logger LOG = Logger.getLogger(LoginResource.class.getName());
+            private static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
+            private static final KeyFactory userKeyFactory = datastore.newKeyFactory().setKind("User");
+            private final Gson g = new Gson();
 
-    public GetResource() {
+            public GetResource() {
     }
 
     @GET
