@@ -234,4 +234,3 @@ function listUsers() {
     window.location.href = "./listUser.html"
 }
 
-

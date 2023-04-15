@@ -13,6 +13,7 @@
         .then (response => response.json())
         .then (data => {
             var properties = data.properties;
+            const filename = properties.photo.value;
             document.getElementById("username").value=localStorage.getItem("username");
             document.getElementById("password").value=properties.password.value;
             document.getElementById("role").value=properties.role.value;
@@ -25,11 +26,29 @@
             document.getElementById("occupation").value=properties.occupation.value;
             document.getElementById("address").value=properties.address.value;
             document.getElementById("NIF").value=properties.NIF.value;
-        })
+            if(filename == null || filename == "") {
+                console.log("NO PHOTO AVAILABLE");
+            } else {
+                var request = new XMLHttpRequest();
+                request.open("GET", "/gcs/" + bucket + "/" + filename, true);
+                request.responseType = 'blob';
+                request.addEventListener('load', function() {
+                    if (request.status === 200) {
+                        var blob = request.response;
+                        var imageUrl = URL.createObjectURL(blob);
+                        var img = document.createElement('img');
+                        img.src = imageUrl;
+                        document.body.appendChild(img);
+                    } else {
+                        console.log('Image load error');
+                    }
+                });
+                request.send();
+            }})
     </script>
 </head>
 <body>
-<h1>Welcome to the home page for GBOs and GSs!</h1>
+<h1>Welcome to your home page!</h1>
 
 <table>
     <tr>
@@ -37,14 +56,23 @@
     </tr>
     <div class="topnav">
         <td><button type='button' onclick='listUsers()'>List Users</button></td>
-        <td><button type='button' onclick='GoToUpdate()'>Update Informations</button></td>
+
         <td><button type='button' onclick="GoToUpdatePWD()">Update Password</button></td>
+
         <td><button type='button' onclick="showToken()">Show Token</button></td>
+
         <td><button type='button' onclick='deleteUser()'>Delete User</button></td>
+
         <td><button type='button' onclick='logout()'>Logout</button></td>
     </div>
 </table>
 <table>
+    <tr>
+        <td>
+            <br>
+            <img id="img">
+        </td>
+    </tr>
     <tr>
         <td>
             <br>
@@ -98,5 +126,3 @@
     </tr>
 </table>
 </body>
-
-
