@@ -47,8 +47,12 @@ public class DeleteResource {
                     if(!delRole.equals("User"))
                         return Response.status(Status.BAD_REQUEST).entity("Error: Don't have permissions").build();
                     break;
-                case "GS":
+                case "GA":
                     if(!delRole.equals("User") && !delRole.equals("GBO"))
+                        return Response.status(Status.BAD_REQUEST).entity("Error: Don't have permissions").build();
+                    break;
+                case "GS":
+                    if(!delRole.equals("User") && !delRole.equals("GBO") && !delRole.equals("GA"))
                         return Response.status(Status.BAD_REQUEST).entity("Error: Don't have permissions").build();
                     break;
                 case "SU":

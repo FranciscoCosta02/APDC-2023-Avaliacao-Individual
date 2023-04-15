@@ -4,6 +4,7 @@ import com.google.cloud.datastore.*;
 import com.google.gson.Gson;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import com.google.cloud.datastore.StructuredQuery.CompositeFilter;
+import utils.UserData;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +43,7 @@ public class ListResource {
 
             Query<Entity> query;
             QueryResults<Entity> results;
-            List<Entity> list;
+            List<UserData> list;
             switch (token.getString("role")) {
                 case "User":
                     query = Query.newEntityQueryBuilder()
@@ -50,8 +51,8 @@ public class ListResource {
                             .setFilter(
                                     CompositeFilter.and(
                                             PropertyFilter.eq("role", "User"),
-                                            PropertyFilter.eq("activity", "active"),
-                                            PropertyFilter.eq("privacy", "public")
+                                            PropertyFilter.eq("activity", "Active"),
+                                            PropertyFilter.eq("privacy", "Public")
                                     )
                             ).build();
                     break;
@@ -85,7 +86,15 @@ public class ListResource {
             }
             results = datastore.run(query);
             list = new ArrayList<>();
-            results.forEachRemaining(list::add);
+            while(results.hasNext()) {
+                Entity aux = results.next();
+                UserData data = new UserData(aux.getKey().getName(), aux.getString("email"),
+                        aux.getString("name"), aux.getString("password"), aux.getString("password"),
+                        aux.getString("role"), aux.getString("privacy"), aux.getString("activity"),
+                        aux.getString("phone"), aux.getString("workplace"), aux.getString("address"),
+                        aux.getString("occupation"), aux.getString("NIF"), aux.getString("photo"));
+                list.add(data);
+            }
             return Response.ok(g.toJson(list)).build();
         } catch (Exception e) {
             txn.rollback();

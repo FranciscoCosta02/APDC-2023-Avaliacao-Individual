@@ -45,6 +45,7 @@ function deleteUser() {
 }
 
 function deleteOther() {
+    event.preventDefault();
     const url = '/rest/delete';
     const username = document.getElementById('username').value;
     fetch(url + "/" + username, {
@@ -56,14 +57,14 @@ function deleteOther() {
     .then (response => {
         if(response.ok) {
             if(username == localStorage.getItem('username')) {
-                removeFromLocalStorage()
+                removeFromLocalStorage();
                 window.location.href = "./../index.html";
             } else {
-                alert("User deleted")
+                alert("User deleted");
                 window.location.href = "./home.html";
             }
         } else {
-            alert("Error")
+            alert("Error");
         }     
     })
 }
@@ -127,6 +128,7 @@ function updatePWD() {
 }
 
 function getUser() {
+    event.preventDefault();
     const username = document.getElementById('username').value;
     const url = '/rest/get/';
     fetch(url + username, {
@@ -134,8 +136,7 @@ function getUser() {
     })
     .then (response => response.json())
     .then (data => {
-        var properties = data.properties
-        console.log(JSON.stringify(data.properties));
+        var properties = data.properties;
         document.getElementById("username").value=username;
         document.getElementById("password").value=properties.password.value;
         document.getElementById("role").value=properties.role.value;
@@ -148,7 +149,6 @@ function getUser() {
         document.getElementById("occupation").value=properties.occupation.value;
         document.getElementById("address").value=properties.address.value;
         document.getElementById("NIF").value=properties.NIF.value;
-        document.getElementById("photo").value=properties.photo.value;
     })
     .catch(error => {console.log(error)});
 }
@@ -172,12 +172,10 @@ function updateUser() {
 
     var bucket = "strong-surfer-379310.appspot.com";
     var file = document.getElementById('photo').files[0];
-    alert(file.name);
     var filename = "";
     try{
         var fname = file.name;
-        var imageType = fname.split["."];
-        alert(imageType[imageType.length-1]);
+        var imageType = fname.split(".");
         filename = username+"Photo."+imageType[imageType.length-1];
     } catch (error) {
            console.log(error);
@@ -197,7 +195,9 @@ function updateUser() {
     data.append('address', address);
     data.append('occupation', occupation);
     data.append('NIF', NIF);
-    data.append('photo', filename);
+    if(!(filename == null) || !(filename == "")) {
+        data.append('photo', filename);
+    }
     const datajson = {};
     data.forEach((value, key) => (datajson[key] = value));
     console.log("datajson: " + JSON.stringify(datajson));
@@ -231,11 +231,7 @@ function updateUser() {
 }
 
 function listUsers() {
-    if(localStorage.getItem("role") == "User") {
-        window.location.href = "./listUser.html"
-    } else {
-        window.location.href = "./listRole.html";
-    }
+    window.location.href = "./listUser.html"
 }
 
 

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+    <title>List Users</title>
+    <script>
+        const url = '/rest/list';
+        fetch(url, {
+            method: 'GET',
+            headers:{
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+        .then (response => response.json())
+        .then (data => {
+        console.log(JSON.stringify(data));
+        var table = document.getElementById("listUsers");
+        if(localStorage.getItem("role")=="User") {
+            for(var i = 0; i < data.length; i++) {
+                var linha = document.createElement("tr");
+                var username = data[i].username;
+                var email = data[i].email;
+                var name = data[i].name;
+                linha.innerHTML='<td>' + username + '</td><td>' + email + '</td><td>' + name + '</td>';
+                table.append(linha);
+            }
+        } else {
+            for(var i = 0; i < data.length; i++) {
+                var linha = document.createElement("tr");
+                var username = data[i].username;
+                var email = data[i].email;
+                var name = data[i].name;
+                var role = data[i].role;
+                var privacy = data[i].privacy;
+                var activity = data[i].activity;
+                var phone = data[i].phone;
+                var workplace = data[i].workplace;
+                var address = data[i].address;
+                var occupation = data[i].occupation;
+                var NIF = data[i].NIF;
+                linha.innerHTML='<td>' + username + '</td><td>' + email + '</td><td>' + name + '</td><td>' + role + '</td><td>' 
+                    + privacy + '</td><td>' + activity + '</td><td>' + phone +'</td><td>' + workplace + '</td><td>' + address 
+                    + '</td><td>' + occupation + '</td><td>' + NIF + '</td>';
+                table.append(linha);
+            }   
+        }   
+        })
+        .catch(error => {console.log(error)});
+    </script>
+</head>
+
+<body>
+    <h1>List of Users</h1>
+    <table id="listUsers">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Privacy</th>
+                <th>Activity</th>
+                <th>Phone</th>
+                <th>Workplace</th>
+                <th>Address</th>
+                <th>Occupation</th>
+                <th>NIF</th>
+            </tr>
+        </thead>
+    </table>
+    <tr>
+        <td>
+            <a href='./home.html'>Back</a>
+        </td>
+    </tr>
+</body>

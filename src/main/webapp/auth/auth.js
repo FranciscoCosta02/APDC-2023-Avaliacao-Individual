@@ -27,7 +27,7 @@ function register() {
             var filename = "";
             try{
                 var fname = file.name;
-                var imageType = fname.split["."];
+                var imageType = fname.split(".");
                 filename = username+"Photo."+imageType[imageType.length-1];
             } catch (error) {
                 console.log(error);

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+    <title>List Users</title>
+    <script>
+        function getList() {
+            const url = '/rest/list';
+        fetch(url, {
+            method: 'GET',
+            headers:{
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+        .then (response => response.json())
+        .then (data => {
+        console.log(JSON.stringify(data));
+        var username = properties;
+        var email = properties.email.value;
+        var name =properties.name.value;
+        })
+        .catch(error => {console.log(error)});
+        }
+    </script>
+</head>
+
+<body>
+    <h1>List Users</h1>
+    <button onclick="">
+
+    </button>
+    <tr>
+        <td>
+            <a href='./home.html'>Back</a>
+        </td>
+    </tr>
+</body>
