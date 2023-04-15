@@ -104,7 +104,15 @@ function login() {
             localStorage.setItem("token", data.tokenID);
             localStorage.setItem("username", data.username);
             localStorage.setItem("role", data.role);
-            window.location.href = "./../home/home.html";
+            if(data.role == "User") {
+                window.location.href = "./../home/homeUser.html";
+            } else {
+                if(data.role == "SU") {
+                window.location.href = "./../home/homeSU.html";
+                } else {
+                window.location.href = "./../home/home.html";
+                }
+            }
         } else {
             alert("Login Failed!")
         }
